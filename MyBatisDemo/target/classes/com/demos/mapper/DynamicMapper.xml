@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demos.mapper.DynamicMapper">
+    <!--if 标签-->
+    <select id="">
+        select * from t_user where 1=1
+        <if test="ename !=null and ename!=''">
+            ename=#{ename}
+        </if>
+    </select>
+    <!--where 标签-->
+    <select id="">
+        select * from t_user
+        <where>
+            <if test="ename !=null and ename!=''">
+                ename=#{ename}
+            </if>
+        </where>
+    </select>
+    <!--trim 标签-->
+    <select id="">
+        select * from t_user
+        <trim prefix="where" prefixOverrides="and|or ">
+            <if test="ename !=null and ename!=''">
+                ename=#{ename}
+            </if>
+        </trim>
+    </select>
+    <!--choose标签-->
+    <select id="">
+        <!--引用sql标签-->
+        select <include refid="empcolums"></include> from t_user
+        <choose>
+            <when test="ename !=null and ename!=''">
+                ename=#{ename}
+            </when>
+            <otherwise>
+                did=1
+            </otherwise>
+        </choose>
+    </select>
+    <!--foreach 标签-->
+    <delete id="">
+        delete
+        from t_user
+        where eid in
+              (
+              <foreach collection="eids" separator=",">
+                  #{eid}
+              </foreach>
+                  )
+    </delete>
+    <!--批量添加-->
+    <insert id="">
+        insert  into t_user values
+        <foreach collection="emps" item="emp">
+            (null,#{emp.empname},#{emp.agge})
+        </foreach>
+    </insert>
+    <!--sql标签-->
+    <sql id="empcolums">eid,ename,sex,age, email</sql>
+</mapper>
